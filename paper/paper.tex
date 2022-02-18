@@ -17,15 +17,16 @@
 \maketitle
 
 \section*{Disclaimer}
-I spent most of my time trying to get the models working. It was a complete nightmare. Getting the factor analysis model to work (replacing Smerdon's PCA) took me about 10 hours.
+I spent most of my time trying to get the models working. It was a complete nightmare. I thought it was close to working for many hours. Last 1\% took 99\% of the time.
+Getting the factor analysis model to work (replacing Smerdon's PCA) took me about 10 hours alone.
 Maybe I should have settled for PCA for this draft.
 Perhaps I should not have tried to relearn Pyro, a probabilistic programming language written in Python.
 That being said, if I had to build this model in R I likely would have ended up using RStan, which is a binding to another PPL, so the model wouldn't have really been in R either.
 The data cleaning and manipulation would also have taken me 10x longer since I don't really know R.
-Hindsight is 20/20.
+Hindsight is 20/20. I think it's on its way, though.
 
 The code (and this writeup) is in a rough state as a result -- by the final draft it will be pretty and commented and clear (despite being in Python).
-Similarly, since the model was giving me issues I didn't have compute time to train the model on the whole dataset (which is 4.6M games).
+Similarly, since the model was giving me issues I didn't have compute time to train the model on the whole dataset (which is 4.6M games after cleaning).
 Again this will not be the case by the final draft. Everything works though; I have a complete pipeline
 that just needs some clean up, some hyperparameters to be adjusted/played with, and to be run to completion.
 
@@ -217,7 +218,7 @@ This would provide a new angle from which to attack the problem of increasing dr
 The article mentions measures designed to increase errors and decrease the likelihood of draws.
 These would likely be successful at the highest echelons of play, where games are sufficiently
 scrutinized and play is so precise that suboptimal play essentially does not exist.
-However, at lower levels of play (still professional, but just among weaker players), the problem is not absolute precision.
+However, at slightly lower levels of play (still professional, but just among weaker players), the problem is not absolute precision.
 Rather, (assuming the results support this), the problem is this variance-reducing behavior.
 So from a design perspective, the solution would be to penalize this behavior.
 Making draws worth $\frac{1}{3}$ of a point could discourage taking draws in tournaments, for instance.
