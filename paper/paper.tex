@@ -23,25 +23,20 @@
 \author{Tudor Muntianu}
 \maketitle
 
-\section*{Disclaimer}
-I spent most of my time trying to get the models working. It was a complete nightmare. I thought it was close to working for many hours. Last 1\% took 99\% of the time.
-Getting the factor analysis model to work (replacing Smerdon's PCA) took me about 10 hours alone.
-Maybe I should have settled for PCA for this draft.
-Perhaps I should not have tried to relearn Pyro, a probabilistic programming language written in Python.
-That being said, if I had to build this model in R I likely would have ended up using RStan, which is a binding to another PPL, so the model wouldn't have really been in R either.
-The data cleaning and manipulation would also have taken me 10x longer since I don't really know R.
-Hindsight is 20/20. I think it's on its way, though.
+\section*{Description of changes}
+I changed all the models to be in principally game-theoretic terms.
+The models were rewritten, much of the code has changed, but the basic ideas
+and underlying assumptions have remained.
+The Elo rating system is still used, but I also modified it to allow it to represent
+suboptimal play and inform the predictive logistic regressions that are described later.
 
-The code (and this writeup) is in a rough state as a result -- by the final draft it will be pretty and commented and clear (despite being in Python).
-Similarly, since the model was giving me issues I didn't have compute time to train the model on the whole dataset (which is 4.6M games after cleaning).
-Again this will not be the case by the final draft. Everything works though; I have a complete pipeline
-that just needs some clean up, some hyperparameters to be adjusted/played with, and to be run to completion.
-
-Also, there are a couple of things I would like to add (or at least investigate) by the final draft:
-\begin{itemize}
-    \item Dataset of online games (ostensibly less incentive to draw here, more ``naturalistic'' or aggressive gameplay)
-    \item Using the factor model to compute an index, comparing to Smerdon's results
-\end{itemize}
+The only piece of feedback I was unable to incorporate was running simulations to generate
+data (though I could have done this after training the regressions, it would not have been useful).
+This is principally because of the way the Elo system works, and its description of an expected
+value rather than as probabilities of winning, drawing, or losing.
+So without making baseless assumptions (that would have resulted in useless simulations), generating
+simulated data would not have been useful.
+There was also plenty of real data to work with as well.
 
 All code can be found \href{https://github.com/tmuntianu/chessdraws}{here}.
 
@@ -304,8 +299,9 @@ At slightly lower levels of play, from national masters to lower-rated internati
 values of $\alpha$.
 
 \section{Conclusion}
-These results relate back to the article/real-world situation in a couple of ways.
-First, it shows that variance-lowering behavior at the cost of expected value does occur in chess.
+These results relate back to \href{https://fivethirtyeight.com/features/some-humble-suggestions-to-save-chess-from-itself/}{Roeder's article}/the real-world situation in a couple of ways.
+
+First, they shows that variance-lowering behavior at the cost of expected value does occur in chess.
 That is, playing suboptimally for draws at higher levels of play occurs often.
 It is difficult to identify, however, if this is as a result of random noise or variance in playing strength
 on behalf of players, or if each choice of $\alpha_W, \alpha_B$ for each game is intentional.
@@ -315,15 +311,38 @@ That being said, the majority of situations involve players playing similarly, t
 $\alpha_W\approx \alpha_B$, so although some suboptimal hyperpassive play occurs, it does not occur
 sufficiently to pose a threat to the integrity of the game.
 
-The article mentions measures designed to increase errors and decrease the likelihood of draws.
-These would likely be successful at the highest echelons of play, where games are sufficiently
-scrutinized and play is so precise that suboptimal play essentially does not exist.
+Roeder mentions a few measures designed to decrease drawing behavior, but these again are for
+the highest echelons (super GM levels) of play.
+These measures increase errors and decrease the likelihood of draws, whether by shortening time
+controls, forcing tiebreakers to be played before matches (to force playing for wins), and so on.
+These would likely be successful at the highest levels of play, where games are sufficiently
+scrutinized and play is so precise that suboptimal play essentially cannot exist.
+
 However, at slightly lower levels of play (still professional, but just among weaker players), the problem is not absolute precision.
 Rather, (assuming the results support this), the problem is this variance-reducing behavior.
 So from a design perspective, the solution would be to penalize this behavior.
 Making draws worth $\frac{1}{3}$ of a point could discourage taking draws in tournaments, for instance.
 Removing agreed draws (where players simply agree to a draw rather than playing it out) as a whole could also make this behavior more difficult.
 
-% TODO BIB
-Caissabase, Elo, Smerdon, The Fuzz, original article
+\begin{thebibliography}{9}
+
+\bibitem{caissabase}
+\href{http://caissabase.co.uk/}{Caissabase}. Unknown author.
+
+\bibitem{elo}
+Elo, Arpad (1986). \textit{The Rating of Chessplayers, Past and Present}.
+
+\bibitem{polgar}
+Polgar, Susan (2011). \href{https://chessdailynews.com/the-700-lbs-gorilla-issue-to-draw-or-not-to-draw/}{The 700 lbs gorilla issue: To draw or not to draw.} \textit{Chess Daily News}.
+
+\bibitem{538}
+Roeder, Oliver (2021). \href{https://fivethirtyeight.com/features/some-humble-suggestions-to-save-chess-from-itself/}{Some Humble Suggestions to Save Chess From Itself}. \textit{538}.
+
+\bibitem{thefuzz}
+SeatGeek (2022). \href{https://github.com/seatgeek/thefuzz}{TheFuzz}, Python package.
+
+\bibitem{fci}
+Smerdon, David (2021). \href{https://www.davidsmerdon.com/?p=2168}{\textit{The Fighting Chess Index}}.
+
+\end{thebibliography}
 \end{document}
